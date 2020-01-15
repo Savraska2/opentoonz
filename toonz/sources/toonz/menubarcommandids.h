@@ -365,9 +365,12 @@
 #define MI_OpenOnlineManual "MI_OpenOnlineManual"
 #define MI_OpenWhatsNew "MI_OpenWhatsNew"
 #define MI_OpenCommunityForum "MI_OpenCommunityForum"
-#define MI_OpenReportAnIssue "MI_OpenReportAnIssue"
+#define MI_OpenReportABug "MI_OpenReportABug"
 
 #define MI_ClearCacheFolder "MI_ClearCacheFolder"
+
+#define MI_VectorGuidedDrawing "MI_VectorGuidedDrawing"
+#define MI_OpenGuidedDrawingControls "MI_OpenGuidedDrawingControls"
 
 #define MI_SelectNextGuideStroke "MI_SelectNextGuideStroke"
 #define MI_SelectPrevGuideStroke "MI_SelectPrevGuideStroke"
@@ -376,6 +379,9 @@
 #define MI_TweenGuideStrokeToSelected "MI_TweenGuideStrokeToSelected"
 #define MI_SelectBothGuideStrokes "MI_SelectBothGuideStrokes"
 #define MI_SelectGuidesAndTweenMode "MI_SelectGuidesAndTweenMode"
+
+#define MI_FlipNextGuideStroke "MI_FlipNextGuideStroke"
+#define MI_FlipPrevGuideStroke "MI_FlipPrevGuideStroke"
 
 #define MI_ExportXDTS "MI_ExportXDTS"
 #endif

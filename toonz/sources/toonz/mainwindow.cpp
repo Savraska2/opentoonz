@@ -455,7 +455,7 @@ centralWidget->setLayout(centralWidgetLayout);*/
   setCommandHandler(MI_OpenWhatsNew, this, &MainWindow::onOpenWhatsNew);
   setCommandHandler(MI_OpenCommunityForum, this,
                     &MainWindow::onOpenCommunityForum);
-  setCommandHandler(MI_OpenReportAnIssue, this, &MainWindow::onOpenReportAnIssue);
+  setCommandHandler(MI_OpenReportABug, this, &MainWindow::onOpenReportABug);
 
   setCommandHandler(MI_MaximizePanel, this, &MainWindow::maximizePanel);
   setCommandHandler(MI_FullScreenWindow, this, &MainWindow::fullScreenWindow);
@@ -957,6 +957,7 @@ void MainWindow::onNewScene() {
   cm->setChecked(MI_ShiftTrace, false);
   cm->setChecked(MI_EditShift, false);
   cm->setChecked(MI_NoShift, false);
+  cm->setChecked(MI_VectorGuidedDrawing, false);
 }
 
 //-----------------------------------------------------------------------------
@@ -1005,21 +1006,30 @@ void MainWindow::onOpenOnlineManual() {
 
 void MainWindow::onOpenWhatsNew() {
   QDesktopServices::openUrl(
-      QUrl("https://github.com/opentoonz/opentoonz/releases/latest"));
+      QUrl(tr("https://github.com/opentoonz/opentoonz/releases/latest")));
 }
 
 //-----------------------------------------------------------------------------
 
 void MainWindow::onOpenCommunityForum() {
   QDesktopServices::openUrl(
-      QUrl("https://groups.google.com/forum/#!forum/opentoonz_en"));
+      QUrl(tr("https://groups.google.com/forum/#!forum/opentoonz_en")));
 }
 
 //-----------------------------------------------------------------------------
 
-void MainWindow::onOpenReportAnIssue() {
-  QDesktopServices::openUrl(
-      QUrl("https://github.com/opentoonz/opentoonz/issues"));
+void MainWindow::onOpenReportABug() {
+  QString str = QString(
+      tr("To report a bug, click on the button below to open a web browser "
+         "window for OpenToonz's Issues page on https://github.com.  Click on "
+         "the 'New issue' button and fill out the form."));
+
+  std::vector<QString> buttons = {QObject::tr("Report a Bug"),
+                                  QObject::tr("Close")};
+  int ret = DVGui::MsgBox(DVGui::INFORMATION, str, buttons, 1);
+  if (ret == 1)
+    QDesktopServices::openUrl(
+        QUrl("https://github.com/opentoonz/opentoonz/issues"));
 }
 //-----------------------------------------------------------------------------
 
@@ -1924,6 +1934,10 @@ void MainWindow::defineActions() {
       createAction(MI_ResetShift, tr("Reset Shift"), "", MenuViewCommandType);
   shiftTraceAction->setIcon(QIcon(":Resources/shift_and_trace_reset.svg"));
 
+  QAction *GuidedDrawingAction = createToggle(
+      MI_VectorGuidedDrawing, tr("Vector Guided Drawing"), "",
+      Preferences::instance()->isGuidedDrawingEnabled(), MenuViewCommandType);
+
   if (QGLPixelBuffer::hasOpenGLPbuffers())
     createToggle(MI_RasterizePli, tr("&Visualize Vector As Raster"), "",
                  RasterizePliToggleAction ? 1 : 0, MenuViewCommandType);
@@ -2030,7 +2044,10 @@ void MainWindow::defineActions() {
   createMenuHelpAction(MI_OpenOnlineManual, tr("&Online Manual..."), "F1");
   createMenuHelpAction(MI_OpenWhatsNew, tr("&What's New..."), "");
   createMenuHelpAction(MI_OpenCommunityForum, tr("&Community Forum..."), "");
-  createMenuHelpAction(MI_OpenReportAnIssue, tr("&Report an Issue..."), "");
+  createMenuHelpAction(MI_OpenReportABug, tr("&Report a Bug..."), "");
+
+  createMenuWindowsAction(MI_OpenGuidedDrawingControls,
+                          tr("Guided Drawing Controls"), "");
 
   createRightClickMenuAction(MI_BlendColors, tr("&Blend colors"), "");
 
@@ -2192,20 +2209,24 @@ void MainWindow::defineActions() {
   CommandManager::instance()->setToggleTexts(V_ShowHideFullScreen,
                                              tr("Full Screen Mode"),
                                              tr("Exit Full Screen Mode"));
-  createRightClickMenuAction(MI_SelectNextGuideStroke,
-                             tr("Select Next Frame Guide Stroke"), "");
-  createRightClickMenuAction(MI_SelectPrevGuideStroke,
-                             tr("Select Previous Frame Guide Stroke"), "");
-  createRightClickMenuAction(MI_SelectBothGuideStrokes,
-                             tr("Select Prev && Next Frame Guide Strokes"), "");
-  createRightClickMenuAction(MI_SelectGuideStrokeReset,
-                             tr("Reset Guide Stroke Selections"), "");
-  createRightClickMenuAction(MI_TweenGuideStrokes,
-                             tr("Tween Selected Guide Strokes"), "");
-  createRightClickMenuAction(MI_TweenGuideStrokeToSelected,
-                             tr("Tween Guide Strokes to Selected"), "");
-  createRightClickMenuAction(MI_SelectGuidesAndTweenMode,
-                             tr("Select Guide Strokes && Tween Mode"), "");
+  createMiscAction(MI_SelectNextGuideStroke,
+                   tr("Select Next Frame Guide Stroke"), "");
+  createMiscAction(MI_SelectPrevGuideStroke,
+                   tr("Select Previous Frame Guide Stroke"), "");
+  createMiscAction(MI_SelectBothGuideStrokes,
+                   tr("Select Prev && Next Frame Guide Strokes"), "");
+  createMiscAction(MI_SelectGuideStrokeReset,
+                   tr("Reset Guide Stroke Selections"), "");
+  createMiscAction(MI_TweenGuideStrokes,
+                   tr("Tween Selected Guide Strokes"), "");
+  createMiscAction(MI_TweenGuideStrokeToSelected,
+                   tr("Tween Guide Strokes to Selected"), "");
+  createMiscAction(MI_SelectGuidesAndTweenMode,
+                   tr("Select Guide Strokes && Tween Mode"), "");
+  createMiscAction(MI_FlipNextGuideStroke,
+                   tr("Flip Next Guide Stroke Direction"), "");
+  createMiscAction(MI_FlipPrevGuideStroke,
+                   tr("Flip Previous Guide Stroke Direction"), "");
 
   // Following actions are for adding "Visualization" menu items to the command
   // bar. They are separated from the original actions in order to avoid
